@@ -345,12 +345,27 @@
     });
 
     function copyText(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            console.log('Copying to clipboard was successful!');
+        // Create a temporary textarea
+        var tempTextArea = document.createElement('textarea');
+        // Set its value to the text that you want to copy
+        tempTextArea.value = text;
+        // Make it not visible on the page
+        tempTextArea.style.position = 'absolute';
+        tempTextArea.style.left = '-9999px';
+        document.body.appendChild(tempTextArea);
+        // Select the text inside the textarea
+        tempTextArea.select();
+        // Copy the text inside the textarea to the clipboard
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Fallback: Copying text command was ' + msg);
             alert('Text copied: ' + text); // Optional: feedback to the user
-        }, function(err) {
-            console.error('Could not copy text: ', err);
-        });
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+        }
+        // Remove the temporary textarea
+        document.body.removeChild(tempTextArea);
     }
     </script>
 </body>
